@@ -1,13 +1,10 @@
 const fs = require('fs')
 const parser = require('fast-xml-parser')
 
-const logKeysAndTypes = (val, obj) => {
-  console.log(val, typeof obj[val])
-}
+const template = fs.readFileSync('./template.html', {encoding: 'utf-8'});
+const libraryFile = fs.readFileSync('./Library.xml', {encoding: 'utf-8'});
 
-const file = fs.readFileSync('./Library.xml', {encoding: 'utf-8'});
-
-const dict = parser.parse(file, {}).plist.dict
+const dict = parser.parse(libraryFile, {}).plist.dict
 const tracks = dict.dict.dict;
 const playlists = dict.array.dict;
 
@@ -47,7 +44,7 @@ const playlistsInAll = playlists.filter(item => {
   }
 });
 
-const ARTIST_KEY = 'albumArtist';
+const ARTIST_KEY = 'artist';
 
 const getArtistsForTracks = (tracks) => {
   const artists = tracks.reduce((acc, track) => {
@@ -65,13 +62,22 @@ const artistsPerPlaylist = playlistsInAll.reduce((acc, pl) => {
   return acc
 }, {})
 
-Object.keys(artistsPerPlaylist).forEach(plid => {
-  const pl = artistsPerPlaylist[plid]
-  console.log(`## ${pl.name}\n`)
-  pl.artists.forEach(artist => {
-    console.log(`* ${artist}\n`)
-  })
-  console.log('\n')
-  console.log('\n')
-})
+const table = ({tableRows}) => `
+<table>
+  <tr><th>Artist</th><th>Playlist</th></tr>
+  ${tableRows}
+</table>
+`;
 
+const tableRows = Object.keys(artistsPerPlaylist).map(plid => {
+  const pl = artistsPerPlaylist[plid];
+  return pl.artists.map(artist => {
+    return `<tr><td>${artist}<td></td><td>${pl.name}</td></tr>`;
+  }).join('\n');
+}).join('');
+
+fs.writeFileSync(
+  './artistsbyplaylist.html',
+  template.replace('${content}', table({tableRows})),
+  {encoding: 'utf-8'}
+)

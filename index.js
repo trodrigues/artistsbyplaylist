@@ -62,22 +62,27 @@ const artistsPerPlaylist = playlistsInAll.reduce((acc, pl) => {
   return acc
 }, {})
 
-const table = ({tableRows}) => `
-<table>
-  <tr><th>Artist</th><th>Playlist</th></tr>
-  ${tableRows}
-</table>
+const listOfPlaylists = ({playlistListItems}) => `
+  <ul class="playlists">
+  ${playlistListItems}
+  </ul>
 `;
 
-const tableRows = Object.keys(artistsPerPlaylist).map(plid => {
+const playlistListItems = Object.keys(artistsPerPlaylist).map(plid => {
   const pl = artistsPerPlaylist[plid];
-  return pl.artists.map(artist => {
-    return `<tr><td>${artist}<td></td><td>${pl.name}</td></tr>`;
+  const innerRows = pl.artists.map(artist => {
+    return `<li>${artist}</li>`;
   }).join('\n');
+  return `<li>
+    <h2>${pl.name}</h2>
+    <ul class="playlist hidden">
+      ${innerRows}
+    </ul>
+  </li>`;
 }).join('');
 
 fs.writeFileSync(
   './artistsbyplaylist.html',
-  template.replace('${content}', table({tableRows})),
+  template.replace('${content}', listOfPlaylists({playlistListItems})),
   {encoding: 'utf-8'}
 )

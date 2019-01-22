@@ -6,3 +6,8 @@ replacing track ids with track info from the overall Library info.
 
 Then it groups artists by playlist and exports a list of the Artists in
 each playlist.
+
+# TODO
+
+* Add a service worker and a manifest to the generated webapp
+* Make it render from json instead of having injected html

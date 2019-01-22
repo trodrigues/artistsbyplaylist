@@ -62,6 +62,14 @@ const artistsPerPlaylist = playlistsInAll.reduce((acc, pl) => {
   return acc
 }, {})
 
+/*
+fs.writeFileSync(
+  './artistsbyplaylist.json',
+  JSON.stringify(artistsPerPlaylist, null, ' '),
+  {encoding: 'utf-8'}
+)
+*/
+
 const listOfPlaylists = ({playlistListItems}) => `
   <ul class="playlists">
   ${playlistListItems}
@@ -82,7 +90,7 @@ const playlistListItems = Object.keys(artistsPerPlaylist).map(plid => {
 }).join('');
 
 fs.writeFileSync(
-  './artistsbyplaylist.html',
+  './abp/index.html',
   template.replace('${content}', listOfPlaylists({playlistListItems})),
   {encoding: 'utf-8'}
 )

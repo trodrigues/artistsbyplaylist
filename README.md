@@ -9,5 +9,5 @@ each playlist.
 
 # TODO
 
-* Add a service worker and a manifest to the generated webapp
+* The SW doesn't seem to be updating properly
 * Make it render from json instead of having injected html
